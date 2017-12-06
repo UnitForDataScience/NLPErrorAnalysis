@@ -1,5 +1,5 @@
 from textblob import TextBlob as tb
-from pyspark import SparkContext, SparkConf, SQLContext
+from pyspark import SparkContext, SparkConf
 import math
 from nltk.corpus import stopwords
 from os import listdir
@@ -20,8 +20,6 @@ conf = SparkConf().setAppName("Data cleaner").setMaster("local[*]").set('spark.e
                                                                                "3600s")
 SparkContext.setSystemProperty("spark.driver.memory", "40gb")
 sc = SparkContext(conf=conf)
-print conf.getAll()
-sqlContext = SQLContext(sc)
 ###############################################
 # Making Documents as RDD
 ###############################################
@@ -67,7 +65,7 @@ def termFrequency(x):
 def tfIDF(x):
     wordTFIDF = []
     for i in range(0, len(x[2])):
-        wordTFIDF.append((i, [(x[0], float(x[2][i]) * (562 / (x[1])))]))
+        wordTFIDF.append((i, [(x[0], float(x[2][i]) * (len(documents) / (x[1])))]))
     return wordTFIDF
 
 
@@ -80,7 +78,7 @@ tfIDFImportanceArray = {}
 for iter in filteredTFIDF.collect():
     tfIDFImportanceArray[iter[0]] = iter[1]
 
-for key,val in tfIDFImportanceArray.iteritems():
+for key, val in tfIDFImportanceArray.iteritems():
     print "-----------------------------------"
     print documents[key]
     print val
