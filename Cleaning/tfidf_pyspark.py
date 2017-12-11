@@ -1,14 +1,18 @@
-from textblob import TextBlob as tb
 from pyspark import SparkContext, SparkConf
-import math
+
 from nltk.corpus import stopwords
 from os import listdir
+import nltk
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 path = '../Data'
 
 stop_words = set(stopwords.words('english'))
 
-documents = [open('../Data/' + filename).read().decode("utf-8").strip().replace("\n", " <newline> ").lower() for
+documents = [open('../Data/' + filename).read().strip().replace("\n", "").lower() for
              filename in
              listdir(path)]
 
@@ -72,7 +76,7 @@ def tfIDF(x):
 documentTermFrequency = wordList.map(lambda x: (x, float(df(x)), termFrequency(x))).persist() \
     .flatMap(lambda x: tfIDF(x))
 
-filteredTFIDF = documentTermFrequency.filter(lambda x: x[1][0][1] > 30).reduceByKey(lambda x, y: x + y)
+filteredTFIDF = documentTermFrequency.filter(lambda x: x[1][0][1] > 20).reduceByKey(lambda x, y: x + y)
 
 tfIDFImportanceArray = {}
 for iter in filteredTFIDF.collect():
@@ -81,5 +85,14 @@ for iter in filteredTFIDF.collect():
 for key, val in tfIDFImportanceArray.iteritems():
     print "-----------------------------------"
     print documents[key]
-    print val
+    print sorted(val, key=lambda x: -1 * x[1])
+    file = open("../Sally/" + str(key) + ".txt", 'w+')
+    file.write(str(documents[key].encode("utf-8")))
+    file.write("\n\n")
+    for temp in sorted(val, key=lambda x: -1 * x[1]):
+        if len(temp[0]) > 2:
+            file.write(
+                str(temp[0]) + " " + str(nltk.stem.WordNetLemmatizer().lemmatize(temp[0])) + " " + str(temp[1]) + "\n")
+    file.flush()
+    file.close()
     print "-----------------------------------"
