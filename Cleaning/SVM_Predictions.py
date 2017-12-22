@@ -2,7 +2,7 @@ from os import listdir
 import pandas as pd
 
 ##########################################################
-# Documents and there target value
+# Documents and their target value
 ##########################################################
 path = '../Data'
 data = pd.read_csv('../lerresults.csv')
@@ -40,12 +40,33 @@ tfidf = tfIDFTransformer.fit_transform(termFrequency)
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
 import numpy as np
+from sklearn import svm
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
 
 accuracy = []
-text_clf_svm = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()), ('clf-svm', SGDClassifier())])
-for i in range(0, 100):
-    text_clf_svm.fit(documents[0:int(0.70 * len(documents))], target[0:int(0.70 * len(documents))])
-    predict = text_clf_svm.predict(documents[int(0.70 * len(documents)):len(documents)])
-    accuracy.append(np.mean(predict == target[int(0.70 * len(documents)):len(documents)]))
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.snowball import SnowballStemmer
+from nltk.stem import WordNetLemmatizer
+
+stemit = SnowballStemmer("english")
+wordnet_lemmatizer = WordNetLemmatizer()
+
+
+def stemmer(word):
+    # print stemit.stem(word.decode("utf-8"))
+    return stemit.stem(word.decode("utf-8"))
+
+
+text_clf_svm = Pipeline(
+    [('vect', CountVectorizer(stop_words="english", min_df=2, ngram_range=(1, 1))),
+     ('tfidf', TfidfTransformer(use_idf=True)),
+     ('clf-svm', MultinomialNB(alpha=0.05))])
+# for i in range(0, 100):
+
+text_clf_svm.fit(documents[0:int(0.6 * len(documents))], target[0:int(0.6 * len(documents))])
+predict = text_clf_svm.predict(documents[int(0.6 * len(documents)):len(documents)])
+accuracy.append(np.mean(predict == target[int(0.6 * len(documents)):len(documents)]))
 
 print accuracy
