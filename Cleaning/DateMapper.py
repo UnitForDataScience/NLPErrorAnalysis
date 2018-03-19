@@ -1,5 +1,6 @@
 import datefinder
 import json
+import datetime
 # for match in datefinder.find_dates(open("./HumanErrors/Arkansas Nuclear One/ML12132A371.txt", "r").read()):
 #     print match
 
@@ -35,14 +36,22 @@ for plants in listdir(path):
             sent = sent[index:]
 
             for match in datefinder.find_dates(sent):
-                print str(match) + " " + file + " " + plants + " " + sent
+                # print str(match) + " " + file + " " + plants + " " + sent
                 # elem = raw_input("Is this the date for this IR")
                 elem = 'y'
                 if elem.lower() == 'y':
                     found = True
                     date = match
                     break
+
             if found:
+                try:
+                    year = int(str(date.year))
+                except:
+                    year = int(raw_input("enter the year"))
+
+                # if 2018 <= year or year < 1999:
+                #     raw_input("Check this:" + file + " " + plants)
                 dict[plants][file] = str(date)
                 open("dataFinds.json", "w").write(json.dumps(dict, ensure_ascii=False))
                 break
