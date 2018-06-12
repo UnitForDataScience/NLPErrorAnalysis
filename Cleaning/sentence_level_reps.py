@@ -43,7 +43,7 @@ error_map = {
 import os
 from nltk import sent_tokenize
 
-inspection_reports = "../Data/Inspection_Report"
+inspection_reports = "./HumanErrors"
 
 power_plants = os.listdir(inspection_reports)
 plant_dictonary = dict()
@@ -79,5 +79,5 @@ for plant in power_plants:
 
 import json
 
-with open("counter.json", "w") as fp:
+with open("new_counter.json", "w") as fp:
     json.dump(plant_dictonary, fp, sort_keys=True, indent=4)
