@@ -22,7 +22,9 @@ for file in os.listdir(path):
 
 area_of_interest = ['burden response', 'condition prohibited technical', 'abnormal', 'ability operate',
                     'alarm response procedure', 'briefing', 'capable performing', 'cause', 'technical specification',
-                    'cognitive', 'decision making', 'dec process', 'bus']
+                    'cognitive', 'decision making', 'dec process', 'bus', 'engineering maintenance personnel',
+                    'evaluation performed', 'event human error', 'train safety', 'handling accident', 'human error',
+                    'human performance', 'inadequate guidance', 'safety bus', 'maintenance personnel', 'personnel']
 from nltk.tokenize import word_tokenize, sent_tokenize
 
 f = open('text.txt', 'a')
