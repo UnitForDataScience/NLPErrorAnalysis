@@ -20,19 +20,23 @@ for file in os.listdir(path):
         documents.append(open(path + '/' + file, 'r').read().strip().replace("\n", " ").lower())
         targets.append(dictionary[check])
 
-area_of_interest = ['burden response', 'condition prohibited technical', 'abnormal operating', 'ability operate',
+area_of_interest = ['burden response', 'condition prohibited technical', 'abnormal', 'ability operate',
                     'alarm response procedure', 'briefing', 'capable performing', 'cause', 'technical specification',
-                    'cognitive', 'decision making', 'dec process']
+                    'cognitive', 'decision making', 'dec process', 'bus']
 from nltk.tokenize import word_tokenize, sent_tokenize
 
+f = open('text.txt', 'a')
 for i, doc in enumerate(documents):
 
     sentences = sent_tokenize(doc)
     for sentence in sentences:
         for area in area_of_interest:
 
-            if area in sentence and area == 'dec process':
-                print(sentence + '\n\n' + area + ":" + targets[i] + '\n\n')
+            if area in sentence:
+                f.write(sentence + '\n\n' + area + ":" + targets[i] + '\n\n')
+
+f.flush()
+f.close()
 
 """
 Interesting KeyWords : cognitive, cause, decision making
